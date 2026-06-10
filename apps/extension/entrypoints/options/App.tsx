@@ -1,11 +1,20 @@
 import { useEffect, useState, useRef } from 'react';
 import type { TargetLanguage, QuizType } from '@i-speak-hello/shared';
-import { LANGUAGES } from '@i-speak-hello/shared';
+import { LANGUAGES, DEFAULT_OPENROUTER_MODEL } from '@i-speak-hello/shared';
 import { useSettingsStore } from '../../src/stores/settingsStore';
 import { exportData, importData, downloadBackupFile, readBackupFile, getLastBackupTimestamp } from '../../src/lib/backup';
 import { cn } from '../../src/lib/cn';
 import { useTheme } from '../../src/hooks/useTheme';
 import { ExcelImportSection } from '../../src/components/import/ExcelImportSection';
+
+const OPENROUTER_MODEL_SUGGESTIONS = [
+  'google/gemini-2.5-flash',
+  'google/gemini-2.5-flash-lite',
+  'openai/gpt-5-mini',
+  'anthropic/claude-haiku-4.5',
+  'meta-llama/llama-3.3-70b-instruct',
+  'deepseek/deepseek-chat-v3.1',
+];
 
 const ALL_QUIZ_TYPES: { key: QuizType; label: string; desc: string }[] = [
   { key: 'flashcard', label: '🃏 Flashcard', desc: 'Kartu bolak-balik' },
@@ -368,6 +377,47 @@ export default function App() {
           />
           {settings.openRouterApiKey && (
             <p className="mt-2 text-xs text-green-600 dark:text-green-400">✓ API key tersimpan</p>
+          )}
+
+          {/* Model selection */}
+          {settings.openRouterApiKey && (
+            <div className="mt-4 border-t border-stone-100 pt-4 dark:border-stone-700">
+              <label className="mb-1 block text-sm font-medium text-stone-600 dark:text-stone-300">
+                Model AI
+              </label>
+              <input
+                type="text"
+                list="openrouter-models"
+                value={settings.openRouterModel ?? ''}
+                onChange={e => {
+                  updateSettings({ openRouterModel: e.target.value.trim() || undefined });
+                  showSaved();
+                }}
+                placeholder={DEFAULT_OPENROUTER_MODEL}
+                className="w-full rounded-lg border border-stone-200 px-4 py-2 font-mono text-sm outline-none focus:border-primary dark:border-stone-600 dark:bg-stone-700 dark:text-white"
+              />
+              <datalist id="openrouter-models">
+                {OPENROUTER_MODEL_SUGGESTIONS.map(m => (
+                  <option key={m} value={m} />
+                ))}
+              </datalist>
+              {settings.openRouterModel && !/^[\w.-]+\/[\w.:-]+$/.test(settings.openRouterModel) && (
+                <p className="mt-1 text-xs text-amber-600 dark:text-amber-400">
+                  ⚠ Format tidak valid. Gunakan format "provider/model", mis. {DEFAULT_OPENROUTER_MODEL}.
+                </p>
+              )}
+              <p className="mt-1 text-xs text-stone-400 dark:text-stone-500">
+                ID model OpenRouter. Kosongkan untuk default ({DEFAULT_OPENROUTER_MODEL}). Lihat daftar di{' '}
+                <a
+                  href="https://openrouter.ai/models"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-primary hover:underline"
+                >
+                  openrouter.ai/models
+                </a>
+              </p>
+            </div>
           )}
 
           {/* Sentence refresh interval */}

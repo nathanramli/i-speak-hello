@@ -37,6 +37,7 @@ export function WordList() {
       word.original,
       word.translation,
       word.targetLanguage,
+      settings.openRouterModel,
     );
     await updateWord(word.id, {
       sentences: result.sentences.length > 0 ? result.sentences : word.sentences,

@@ -236,6 +236,7 @@ export default function App() {
                               translation: w.translation,
                               targetLanguage: w.targetLanguage,
                             })),
+                            currentSettings.openRouterModel,
                           );
 
                           for (const [wordId, result] of results) {

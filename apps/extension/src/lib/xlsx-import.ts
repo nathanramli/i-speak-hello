@@ -188,6 +188,7 @@ export async function enrichWordsWithProgress(
     results: Map<string, EnrichResult>,
   ) => void,
   abortSignal: { aborted: boolean },
+  model?: string,
 ): Promise<Map<string, EnrichResult>> {
   const allResults = new Map<string, EnrichResult>();
   const batchSize = 5;
@@ -197,7 +198,7 @@ export async function enrichWordsWithProgress(
     if (abortSignal.aborted) break;
 
     const batch = words.slice(i, i + batchSize);
-    const batchResults = await enrichWordsBatch(apiKey, batch);
+    const batchResults = await enrichWordsBatch(apiKey, batch, model);
 
     for (const [id, result] of batchResults) {
       allResults.set(id, result);

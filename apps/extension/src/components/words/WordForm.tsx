@@ -45,6 +45,7 @@ export function WordForm({ onSaved }: WordFormProps) {
             settings.openRouterApiKey!,
             original.trim(),
             targetLanguage,
+            settings.openRouterModel,
           );
 
           const input: WordCreateInput = {

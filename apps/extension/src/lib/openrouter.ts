@@ -1,4 +1,4 @@
-import type { Sentence, TargetLanguage } from '@i-speak-hello/shared';
+import { DEFAULT_OPENROUTER_MODEL, type Sentence, type TargetLanguage } from '@i-speak-hello/shared';
 
 const OPENROUTER_API_URL = 'https://openrouter.ai/api/v1/chat/completions';
 
@@ -37,6 +37,7 @@ export async function enrichWordFull(
   apiKey: string,
   word: string,
   targetLanguage: TargetLanguage,
+  model: string = DEFAULT_OPENROUTER_MODEL,
 ): Promise<EnrichResult> {
   const isZh = targetLanguage === 'zh';
   const langName = LANG_NAMES[targetLanguage];
@@ -58,7 +59,7 @@ Return:{"translation":"<Indonesian>","acceptedAnswers":["<3-5 alternative correc
       'X-Title': 'I Speak Hello',
     },
     body: JSON.stringify({
-      model: 'google/gemini-2.0-flash-001',
+      model,
       messages: [
         { role: 'system', content: systemPrompt },
         { role: 'user', content: userPrompt },
@@ -121,6 +122,7 @@ export async function enrichWord(
   word: string,
   translation: string,
   targetLanguage: TargetLanguage,
+  model: string = DEFAULT_OPENROUTER_MODEL,
 ): Promise<EnrichResult> {
   const isZh = targetLanguage === 'zh';
   const langName = LANG_NAMES[targetLanguage];
@@ -142,7 +144,7 @@ Return:{"acceptedAnswers":["<3-5 alternative correct Indonesian translations/syn
       'X-Title': 'I Speak Hello',
     },
     body: JSON.stringify({
-      model: 'google/gemini-2.0-flash-001',
+      model,
       messages: [
         { role: 'system', content: systemPrompt },
         { role: 'user', content: userPrompt },
@@ -197,6 +199,7 @@ Return:{"acceptedAnswers":["<3-5 alternative correct Indonesian translations/syn
 export async function enrichWordsBatch(
   apiKey: string,
   words: Array<{ id: string; original: string; translation: string; targetLanguage: TargetLanguage }>,
+  model: string = DEFAULT_OPENROUTER_MODEL,
 ): Promise<Map<string, EnrichResult>> {
   const results = new Map<string, EnrichResult>();
 
@@ -227,7 +230,7 @@ ${wordList}
           'X-Title': 'I Speak Hello',
         },
         body: JSON.stringify({
-          model: 'google/gemini-2.0-flash-001',
+          model,
           messages: [
             { role: 'system', content: systemPrompt },
             { role: 'user', content: userPrompt },

@@ -144,6 +144,7 @@ export function ExcelImportSection() {
             }
           },
           abortRef.current,
+          settings.openRouterModel,
         );
 
         setEnrichedCount(results.size);

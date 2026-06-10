@@ -130,7 +130,7 @@ export default defineBackground(() => {
 
           for (const word of batch) {
             try {
-              const result = await enrichWord(apiKey, word.original, word.translation, word.targetLanguage);
+              const result = await enrichWord(apiKey, word.original, word.translation, word.targetLanguage, config.openRouterModel);
 
               // Update word with fresh sentences + distractors
               const allWords = [...words] as Word[];
